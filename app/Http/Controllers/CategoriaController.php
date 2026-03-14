@@ -51,17 +51,24 @@ class CategoriaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Categoria $categoria)
+    public function edit($id)
     {
-        //
+        $categoria = Categoria::findOrFail($id);
+        return view('categoria.edit', compact('categoria'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Categoria $categoria)
+    public function update(Request $request, $id)
     {
-        //
+         try{
+            $categoria = Categoria::findOrFail($id);
+            $categoria->update($request->all());
+        } catch(Exception $e){
+            Log::error('Erro ao alterar categoria: '. $e->getMessage(), ['stack' => $e->getStackTraceAsString()]);
+        }
+        return redirect()->route('categoria.index');
     }
 
     /**
@@ -75,6 +82,6 @@ class CategoriaController extends Controller
         } catch(Exception $e){
             Log::error('Erro ao excluir categoria: '. $e->getMessage(), ['stack' => $e->getStackTraceAsString()]);
         }
-        return redirect()->route('categorias.index');
+        return redirect()->route('categoria.index');
     }
 }
